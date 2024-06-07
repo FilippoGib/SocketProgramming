@@ -12,7 +12,7 @@ def handle_client(conn, addr):
 
 def start(s, server):
     s.listen()
-    print(f"[LISTENING] Server is listening on {server}")
+    print(f"[LISTENING] Server is listening...")
     while True:
         conn, addr = s.accept()
         pid = os.fork()
@@ -30,15 +30,16 @@ def main():
     parser = argparse.ArgumentParser(description='Server to handle clients')
     parser.add_argument('--server', type=str, default=socket.gethostbyname(socket.gethostname()), help='Server IP address')
     parser.add_argument('--port', type=int, default=8080, help='Server port number')
+    #add arguments if needed or override the default values
     args = parser.parse_args()
 
     ADDR = (args.server, args.port)
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(ADDR)
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(ADDR)
 
-    print("[STARTING] server is starting...")
-    start(s, args.server)
+        print(f"[STARTING] server is starting with server: {args.server}, on port: {args.port}")
+        start(s, args.server)
 
 if __name__ == "__main__":
     main()
