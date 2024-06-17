@@ -72,5 +72,13 @@ int main (int argc, char **argv)
         exit(6);
     }
     printf("Ho spedito l'indirizzo con successo\n");
+    
+    bzero(buffer, 256);
+
+    read(sockfd, buffer,255);
+    printf(buffer);
+
     return 0;
+
+
 }

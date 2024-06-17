@@ -139,7 +139,8 @@ int main (int argc, char **argv)
             }
             char * class = classFinder(ipBin); //classe dell'ip
             char * netmask = "";
-            char * netIDStr = "";
+            char * netIDString = "";
+            char * broadcastString = "";
             bool abc = false;
 
             if(strcmp(class, "ERR") == 0)
@@ -176,10 +177,22 @@ int main (int argc, char **argv)
             {
                 unsigned int netmaskBi = ip_to_int(netmask);
                 unsigned int netID = ipBin & netmaskBi;
-                netIDStr = uintToIp(netID);
+                unsigned int netMask_negative = ~netmaskBi;
+                unsigned int broadcast =  netID | netMask_negative;
+                broadcastString = uintToIp(broadcast);
+                netIDString = uintToIp(netID);
             }
 
-            fprintf(stdout, "%s %s %s\n",class, netIDStr, netmask);
+            char message[256];
+            bzero(message,256);
+
+            if(sprintf(message, "%s %s %s\n",class, netIDString, broadcastString)<0)
+            {
+                error("ERROR\n");
+                exit(8);
+            }
+
+            write(newsockfd, message, 255);
 
             return 0;
         }
